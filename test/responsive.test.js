@@ -21,3 +21,8 @@ test('reduced motion and responsive narrow-phone rules are present', () => {
   assert.match(html, /max-width:460px/);
   assert.match(html, /env\(safe-area-inset-bottom/);
 });
+
+test('narrow-phone shell keeps the essential loop above the fold', () => {
+  assert.match(html, /@media\(max-width:460px\)/);
+  assert.match(html, /\.hint\{display:none\}/);
+});
