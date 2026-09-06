@@ -1,11 +1,12 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const http = require('node:http');
+const path = require('node:path');
 const { createServer, resolveRequestPath } = require('../server');
 
-function request(port, path, method = 'GET') {
+function request(port, requestPath, method = 'GET') {
   return new Promise((resolve, reject) => {
-    const req = http.request({ port, path, method }, res => {
+    const req = http.request({ port, path: requestPath, method }, res => {
       let body = '';
       res.setEncoding('utf8');
       res.on('data', chunk => { body += chunk; });
@@ -20,6 +21,17 @@ test('path resolver rejects malformed encodings and traversal', () => {
   assert.equal(resolveRequestPath(__dirname, '/%E0%A4%A').error, 400);
   assert.equal(resolveRequestPath(__dirname, '/../server.js').error, 403);
   assert.equal(resolveRequestPath(__dirname, '/..\\server.js').error, 403);
+});
+
+test('server does not expose repository internals', async t => {
+  const server = createServer({ root: path.join(__dirname, '..') });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  t.after(() => server.close());
+  const port = server.address().port;
+  for (const url of ['/server.js', '/src/storage.js', '/test/game.test.js', '/package.json']) {
+    const response = await request(port, url);
+    assert.equal(response.status, 404, `${url} should not be public`);
+  }
 });
 
 test('server exposes health and static page safely', async t => {
