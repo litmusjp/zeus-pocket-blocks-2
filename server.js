@@ -89,7 +89,7 @@ function createServer(options = {}) {
 
 if (require.main === module) {
   createServer().listen(DEFAULT_PORT, '0.0.0.0', () => {
-    console.log(`Pocket Blocks 2 listening on ${DEFAULT_PORT}`);
+    console.log(`Signal Garden listening on ${DEFAULT_PORT}`);
   });
 }
 
