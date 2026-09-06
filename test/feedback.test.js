@@ -13,6 +13,7 @@ test('Signal Garden exposes live feedback and distinct identity', () => {
   assert.match(html, /<script src="\/src\/storage\.js"><\/script>/);
   assert.match(html, /SignalGame/);
   assert.match(html, /SignalStorage/);
+  for (const api of ['createGameState','collides','rotateWithKicks','lockPiece','clearLines','step']) assert.match(html, new RegExp(`rules\\.${api}`));
 });
 
 test('feedback states announce pause, drops, clears, combos, levels, and completion', () => {
