@@ -3,11 +3,14 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const html = fs.readFileSync(require('node:path').join(__dirname, '..', 'index.html'), 'utf8');
 
-test('Signal Garden exposes live feedback and distinct identity', () => {
-  assert.doesNotMatch(html, /<h1>Pocket Blocks/);
-  assert.doesNotMatch(html, /<h2 id="overTitle">Pocket Blocks/);
+test('Pocket Blocks 2.0 exposes live feedback and distinct identity', () => {
+  assert.match(html, /<title>Pocket Blocks 2\.0<\/title>/);
+  assert.match(html, /<h1>Pocket Blocks 2\.0<\/h1>/);
+  assert.match(html, /id="overTitle">Pocket Blocks 2\.0/);
+  assert.match(html, /meta name="description" content="Pocket Blocks 2\.0/);
+  assert.doesNotMatch(html, /Signal Garden/);
   assert.match(html, /aria-live="polite"/);
-  assert.match(html, /Signal Garden/);
+  assert.match(html, /Pocket Blocks 2\.0/);
   assert.match(html, /NEW BEST|new-best/);
   assert.match(html, /<script src="\/src\/game\.js"><\/script>/);
   assert.match(html, /<script src="\/src\/storage\.js"><\/script>/);

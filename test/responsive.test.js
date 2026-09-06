@@ -3,9 +3,9 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const html = fs.readFileSync(require('node:path').join(__dirname, '..', 'index.html'), 'utf8');
 
-test('responsive shell declares mobile-safe viewport and Signal Garden identity', () => {
+test('responsive shell declares mobile-safe viewport and Pocket Blocks 2.0 identity', () => {
   assert.match(html, /viewport-fit=cover/);
-  assert.match(html, /Signal Garden/);
+  assert.match(html, /Pocket Blocks 2\.0/);
   assert.match(html, /touch-action:none/);
 });
 
