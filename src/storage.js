@@ -14,7 +14,21 @@ const DEFAULT_RECORD = Object.freeze({
 });
 
 function copy(value) { return JSON.parse(JSON.stringify(value)); }
-function validRecord(value) { return value && typeof value === 'object' && value.version === STORAGE_VERSION && value.bests && value.preferences; }
+function validBest(value) { return value && typeof value === 'object' && Number.isFinite(Number(value.score)) && Number.isFinite(Number(value.lines)) && Number.isFinite(Number(value.level)); }
+function validRecord(value) { return value && typeof value === 'object' && value.version === STORAGE_VERSION && value.bests && typeof value.bests === 'object' && ['classic', 'sprint', 'daily'].every(key => validBest(value.bests[key])) && value.preferences && typeof value.preferences === 'object'; }
+function normalizeRecord(value) {
+  const record = copy(DEFAULT_RECORD);
+  if (!value || typeof value !== 'object') return record;
+  if (value.preferences && typeof value.preferences === 'object') record.preferences = { ...record.preferences, ...value.preferences };
+  if (value.bests && typeof value.bests === 'object') {
+    for (const key of Object.keys(record.bests)) {
+      const source = value.bests[key];
+      if (validBest(source)) record.bests[key] = { ...record.bests[key], score: Math.max(0, Number(source.score)), lines: Math.max(0, Number(source.lines)), level: Math.max(1, Number(source.level)), achievedAt: typeof source.achievedAt === 'string' ? source.achievedAt : null };
+    }
+  }
+  if (value.dailyRuns && typeof value.dailyRuns === 'object' && !Array.isArray(value.dailyRuns)) record.dailyRuns = value.dailyRuns;
+  return record;
+}
 function createStore(storage = globalThis.localStorage) {
   function readRaw() {
     try { return storage && typeof storage.getItem === 'function' ? storage.getItem(STORAGE_KEY) : storage?.get(STORAGE_KEY); } catch { return null; }

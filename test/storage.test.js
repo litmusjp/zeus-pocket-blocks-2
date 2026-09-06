@@ -19,6 +19,15 @@ test('storage migrates legacy best score and writes versioned records', () => {
   assert.deepEqual(JSON.parse(memory.get('signal-garden')).bests.classic, saved.bests.classic);
 });
 
+test('storage replaces partial nested records with safe defaults', () => {
+  const memory = new Map([['signal-garden', JSON.stringify({ version: 1, bests: {}, preferences: {} })]]);
+  const store = createStore(memory);
+  const loaded = store.load();
+  assert.deepEqual(loaded.bests, DEFAULT_RECORD.bests);
+  assert.doesNotThrow(() => store.updateBest('classic', { score: 25, lines: 1, level: 1 }));
+  assert.equal(store.load().bests.classic.score, 25);
+});
+
 test('storage never replaces a higher personal best', () => {
   const memory = new Map();
   const store = createStore(memory);
