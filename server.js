@@ -56,14 +56,15 @@ function createServer(options = {}) {
     }
 
     const requestedPath = (req.url || '/').split('?')[0].replaceAll('\\\\', '/');
-    if (requestedPath === '/server.js' || requestedPath === '/package.json' || requestedPath.startsWith('/src/') || requestedPath.startsWith('/test/')) {
-      return response(res, 404, 'Not found', { 'Content-Type': 'text/plain; charset=utf-8' });
-    }
     const resolved = resolveRequestPath(root, req.url);
     if (resolved.error) {
       return response(res, resolved.error, resolved.error === 400 ? 'Bad request' : 'Forbidden', {
         'Content-Type': 'text/plain; charset=utf-8',
       });
+    }
+    const publicFiles = new Set(['/', '/index.html', '/src/game.js', '/src/storage.js']);
+    if (!publicFiles.has(requestedPath)) {
+      return response(res, 404, 'Not found', { 'Content-Type': 'text/plain; charset=utf-8' });
     }
 
     fs.stat(resolved.filePath, (statError, stat) => {

@@ -1,4 +1,8 @@
 'use strict';
+(function(root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.SignalStorage = factory();
+})(typeof globalThis !== 'undefined' ? globalThis : this, function() {
 
 const STORAGE_KEY = 'signal-garden';
 const STORAGE_VERSION = 1;
@@ -58,4 +62,5 @@ function createStore(storage = globalThis.localStorage) {
   return { load, updateBest, savePreferences };
 }
 
-module.exports = { STORAGE_KEY, STORAGE_VERSION, DEFAULT_RECORD, createStore };
+return { STORAGE_KEY, STORAGE_VERSION, DEFAULT_RECORD, createStore };
+});

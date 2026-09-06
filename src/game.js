@@ -1,5 +1,8 @@
 'use strict';
-
+(function(root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.SignalGame = factory();
+})(typeof globalThis !== 'undefined' ? globalThis : this, function() {
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 20;
 const SHAPES = [
@@ -73,4 +76,5 @@ function step(state, event) {
   return { ...state, lines, combo, level, score: state.score + scoreClear(count, level, combo) };
 }
 
-module.exports = { BOARD_WIDTH, BOARD_HEIGHT, SHAPES, createSeededRandom, dailySeed, createGameState, collides, rotateWithKicks, lockPiece, clearLines, scoreClear, step };
+return { BOARD_WIDTH, BOARD_HEIGHT, SHAPES, createSeededRandom, dailySeed, createGameState, collides, rotateWithKicks, lockPiece, clearLines, scoreClear, step };
+});

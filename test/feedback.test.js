@@ -9,6 +9,10 @@ test('Signal Garden exposes live feedback and distinct identity', () => {
   assert.match(html, /aria-live="polite"/);
   assert.match(html, /Signal Garden/);
   assert.match(html, /NEW BEST|new-best/);
+  assert.match(html, /<script src="\/src\/game\.js"><\/script>/);
+  assert.match(html, /<script src="\/src\/storage\.js"><\/script>/);
+  assert.match(html, /SignalGame/);
+  assert.match(html, /SignalStorage/);
 });
 
 test('feedback states announce pause, drops, clears, combos, levels, and completion', () => {

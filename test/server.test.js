@@ -28,7 +28,11 @@ test('server does not expose repository internals', async t => {
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   t.after(() => server.close());
   const port = server.address().port;
-  for (const url of ['/server.js', '/src/storage.js', '/test/game.test.js', '/package.json']) {
+  for (const url of ['/src/game.js', '/src/storage.js']) {
+    const response = await request(port, url);
+    assert.equal(response.status, 200, `${url} should be public runtime code`);
+  }
+  for (const url of ['/server.js', '/package.json', '/package-lock.json', '/DESIGN.md', '/test/game.test.js', '/src/unknown.js']) {
     const response = await request(port, url);
     assert.equal(response.status, 404, `${url} should not be public`);
   }
