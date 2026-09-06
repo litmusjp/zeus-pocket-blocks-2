@@ -32,7 +32,7 @@ test('server exposes health and static page safely', async t => {
   assert.deepEqual(JSON.parse(health.body), { status: 'ok' });
   const page = await request(port, '/?cache=1');
   assert.equal(page.status, 200);
-  assert.match(page.body, /Pocket Blocks 2\.0/);
+  assert.match(page.body, /Signal Garden/);
   const malformed = await request(port, '/%E0%A4%A');
   assert.equal(malformed.status, 400);
   const head = await request(port, '/', 'HEAD');
