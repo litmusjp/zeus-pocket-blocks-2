@@ -78,3 +78,21 @@ function step(state, event) {
 
 return { BOARD_WIDTH, BOARD_HEIGHT, SHAPES, createSeededRandom, dailySeed, createGameState, collides, rotateWithKicks, lockPiece, clearLines, scoreClear, step };
 });
+
+// Multiplier system for combos and streaks
+const MULTIPLIER_SYSTEM = {
+  streak: { multi: 1.0, label: 'normal' },
+  combo: { multi: 1.0, label: 'normal' },
+  streakBreaker: { multi: 1.0, label: 'normal' }
+};
+function updateScore(count, level, combo) {
+  return count * 100 * level * (MULTIPLIER_SYSTEM.streak.multi || 1.0);
+}
+function animate(text) {
+  const el = document.querySelector('#' + text);
+  if (el) {
+    el.style.transition = 'all 0.3s ease';
+    setTimeout(() => el.style.transform = 'scale(1.1)', 10);
+    setTimeout(() => el.style.transform = 'scale(1)', 300, 10);
+  }
+}
